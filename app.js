@@ -265,6 +265,12 @@ function limparFormularioPreservandoAdmin() {
 
   form.reset(); // limpa tudo — inclusive estimativas de soja e milho
 
+  // Limpeza explícita dos campos de estimativa (garante em Android e campos hidden via display:none)
+  ["vagens", "graos", "produtividade", "graos_milho", "produtividade_milho"].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.value = "";
+  });
+
   // Restaura parâmetros técnicos nos inputs hidden
   variedadeSojaInput.value      = variedadeSoja;
   populacaoFinalSojaInput.value = populacaoSoja;
