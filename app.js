@@ -256,22 +256,28 @@ async function enviarPayload(payload) {
 // ===============================
 function limparFormularioPreservandoAdmin() {
 
-  var variedade = variedadeSojaInput.value;
-  var populacao = populacaoFinalSojaInput.value;
+  // Salva todos os 5 parâmetros técnicos (hidden) antes do reset
+  var variedadeSoja      = variedadeSojaInput.value;
+  var populacaoSoja      = populacaoFinalSojaInput.value;
+  var hibridoMilho       = hibridoMilhoInput.value;
+  var pmgMilho           = pmgMilhoInput.value;
+  var populacaoMilho     = populacaoFinalMilhoInput.value;
 
-  var graosMilho = form.graos_milho ? form.graos_milho.value : "";
-  var produtividadeMilho = form.produtividade_milho ? form.produtividade_milho.value : "";
+  form.reset(); // limpa tudo — inclusive estimativas de soja e milho
 
-  form.reset();
+  // Restaura parâmetros técnicos nos inputs hidden
+  variedadeSojaInput.value      = variedadeSoja;
+  populacaoFinalSojaInput.value = populacaoSoja;
+  hibridoMilhoInput.value       = hibridoMilho;
+  pmgMilhoInput.value           = pmgMilho;
+  populacaoFinalMilhoInput.value = populacaoMilho;
 
-  variedadeSojaInput.value = variedade;
-  populacaoFinalSojaInput.value = populacao;
-
-  variedadeSojaText.innerText = variedade;
-  populacaoFinalSojaText.innerText = populacao;
-
-  if (form.graos_milho) form.graos_milho.value = graosMilho;
-  if (form.produtividade_milho) form.produtividade_milho.value = produtividadeMilho;
+  // Restaura os textos exibidos na tela
+  variedadeSojaText.innerText      = variedadeSoja;
+  populacaoFinalSojaText.innerText = populacaoSoja;
+  hibridoMilhoText.innerText       = hibridoMilho;
+  pmgMilhoText.innerText           = pmgMilho;
+  populacaoFinalMilhoText.innerText = populacaoMilho;
 }
   
 // ===============================
