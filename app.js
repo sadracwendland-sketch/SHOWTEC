@@ -309,6 +309,9 @@ if (form) {
       produtividade_sc_ha: form.produtividade.value,
 
       // MILHO
+      hibrido_milho: hibridoMilhoInput.value,
+      pmg_milho: pmgMilhoInput.value,
+      populacao_final_milho: populacaoFinalMilhoInput.value,
       graos_espiga_milho: form.graos_milho ? form.graos_milho.value : "",
       produtividade_milho_sc_ha: form.produtividade_milho ? form.produtividade_milho.value : ""
     };
