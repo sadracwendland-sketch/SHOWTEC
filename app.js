@@ -4,7 +4,7 @@
 const AUTOMATE_URL =
   "https://defaultc18e5a39b8224257bd2a34c15bd7b4.77.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/8d7d7c22d76e4bab80ccb6c69ec213bd/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=CiMry-yaLyxnARZq1XlAZMDSjeJ7zE9szZ0tjbW-3zw";
 
-const LOCAL_EVENTO    = "Agrobrasilia";
+const LOCAL_EVENTO    = "Showtec";
 const ADMIN_PASSWORD  = "stine2026";
 const STORAGE_QUEUE    = "stine_fila_offline";
 const STORAGE_ADMIN    = "stine_parametros_admin";
