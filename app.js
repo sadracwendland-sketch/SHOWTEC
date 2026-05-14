@@ -64,6 +64,18 @@ function aplicarCulturaAtiva(cultura) {
   if (el("paramMilhoDisplay"))    el("paramMilhoDisplay").style.display    = mostrarMilho ? "" : "none";
   ["vagens","graos","produtividade"].forEach(function(id) { if (el(id)) el(id).required = mostrarSoja; });
   ["graos_milho","produtividade_milho"].forEach(function(id) { if (el(id)) el(id).required = mostrarMilho; });
+
+  // Atualiza "Como participar?" conforme cultura
+  var lista = el("comoParticiparLista");
+  if (lista) {
+    if (mostrarSoja && mostrarMilho) {
+      lista.innerHTML = '<li>Observe a planta de soja e a espiga de milho expostas.</li><li>Dê seu palpite respondendo as perguntas:</li><ul><li>Quantas vagens há na planta?</li><li>Quantos grãos há na planta?</li><li>Qual a produtividade estimada (sc/ha) de soja?</li><li>Quantos grãos há na espiga?</li><li>Qual a produtividade estimada (sc/ha) de milho?</li></ul><li>Preencha o formulário com seus dados.</li><li>O participante com o palpite mais preciso será o vencedor.</li>';
+    } else if (mostrarSoja) {
+      lista.innerHTML = '<li>Observe a planta de soja exposta.</li><li>Dê seu palpite respondendo três perguntas:</li><ul><li>Quantas vagens há na planta?</li><li>Quantos grãos há na planta?</li><li>Qual a produtividade estimada (sc/ha)?</li></ul><li>Preencha o formulário com seus dados.</li><li>O participante com o palpite mais preciso será o vencedor.</li>';
+    } else {
+      lista.innerHTML = '<li>Observe a espiga exposta.</li><li>Dê seu palpite respondendo três perguntas:</li><ul><li>Quantos grãos há na espiga?</li><li>Qual a produtividade estimada (sc/ha)?</li></ul><li>Preencha o formulário com seus dados.</li><li>O participante com o palpite mais preciso será o vencedor.</li>';
+    }
+  }
 }
 
 function alternarCamposAdmin(cultura) {
