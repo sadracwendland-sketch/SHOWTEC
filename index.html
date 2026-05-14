@@ -4,66 +4,48 @@
   <meta charset="UTF-8">
   <title>Desafio Stine 2026</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- PRECONNECT CDN -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-
-  <!-- PRELOAD LOGO PRINCIPAL -->
   <link rel="preload" as="image" href="logo-stine.png">
-  
-  <!-- PWA -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1f7a3f">
-
-  <!-- Bootstrap -->
   <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript>
- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</noscript>
-
-  <!-- CSS -->
+  <noscript><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"></noscript>
   <link rel="stylesheet" href="style.css">
-   
 </head>
-  
+
 <body class="bg-light">
 <div class="container py-4">
 
   <!-- LOGOS -->
   <div class="d-flex justify-content-center align-items-center gap-4 mb-2">
     <img src="logo-stine.png" class="logo" alt="Stine" loading="lazy" decoding="async">
-<img src="logo_evento.png" class="logo-evento" alt="Evento" loading="lazy" decoding="async">
+    <img src="logo_evento.png" class="logo-evento" alt="Evento" loading="lazy" decoding="async">
   </div>
 
-  <!-- STATUS ONLINE / OFFLINE -->
+  <!-- STATUS -->
   <div class="text-center mb-3">
-    <span id="onlineStatus" class="fw-bold text-success d-none">🟢 Online</span>
-    <span id="offlineStatus" class="fw-bold text-danger d-none">🔴 Offline</span>
+    <span id="onlineStatus"  class="fw-bold text-success d-none">🟢 Online</span>
+    <span id="offlineStatus" class="fw-bold text-danger  d-none">🔴 Offline</span>
   </div>
 
-  <h2 class="text-center text-success">
-    Desafio Stine 2026
-  </h2>
+  <h2 class="text-center text-success">Desafio Stine 2026</h2>
 
-  <!-- INTRO -->
   <div class="card mb-3">
     <div class="card-body text-center">
-      <p class="mb-0">
-        Preencha os dados, faça sua estimativa e participe do desafio.
-      </p>
+      <p class="mb-0">Preencha os dados, faça sua estimativa e participe do desafio.</p>
     </div>
   </div>
 
-  <!-- COMO PARTICIPAR -->
   <div class="card mb-3">
     <div class="card-header fw-bold">Como participar?</div>
     <div class="card-body">
       <ul class="mb-0">
-        <li>Observe a espiga exposta.</li>
+        <li>Observe a planta de soja exposta.</li>
         <li>Dê seu palpite respondendo três perguntas:</li>
         <ul>
-          <li>Quantos grãos há na espiga?</li>
+          <li>Quantas vagens há na planta?</li>
+          <li>Quantos grãos há na planta?</li>
           <li>Qual a produtividade estimada (sc/ha)?</li>
         </ul>
         <li>Preencha o formulário com seus dados.</li>
@@ -72,7 +54,6 @@
     </div>
   </div>
 
-  <!-- REGRAS -->
   <div class="card mb-4">
     <div class="card-header fw-bold">Regras do desafio</div>
     <div class="card-body">
@@ -90,8 +71,7 @@
     <div class="card mb-3">
       <div class="card-header">Redes sociais e consentimento</div>
       <div class="card-body">
-
-     <p><strong>Já nos segue no Instagram?</strong></p>
+        <p><strong>Já nos segue no Instagram?</strong></p>
         <div class="form-check">
           <input class="form-check-input" type="radio" name="segue" value="Sim" required>
           <label class="form-check-label">Sim</label>
@@ -108,18 +88,13 @@
 
         <div class="border rounded p-3 bg-light">
           <p style="font-size:0.95rem;">
-
-            Ao participar do Desafio Stine, declaro que estou ciente e de acordo que os dados pessoais informados neste formulário serão coletados e utilizados pela <strong>Stine Sementes</strong> exclusivamente para fins de <strong>comunicação, relacionamento, ações de marketing, eventos e contato comercial</strong>, em conformidade com a <strong>Lei Geral de Proteção de Dados (Lei nº 13.709/2018 – LGPD)</strong>.Os dados não serão comercializados nem compartilhados com terceiros sem autorização, sendo tratados de forma segura e responsável. A qualquer momento, o titular poderá solicitar a atualização, correção ou exclusão de seus dados.
+            Ao participar do Desafio Stine, declaro que estou ciente e de acordo que os dados pessoais informados neste formulário serão coletados e utilizados pela <strong>Stine Sementes</strong> exclusivamente para fins de <strong>comunicação, relacionamento, ações de marketing, eventos e contato comercial</strong>, em conformidade com a <strong>Lei Geral de Proteção de Dados (Lei nº 13.709/2018 – LGPD)</strong>. Os dados não serão comercializados nem compartilhados com terceiros sem autorização, sendo tratados de forma segura e responsável.
           </p>
-
           <div class="form-check mt-3">
             <input class="form-check-input" type="checkbox" name="lgpd" value="Sim" required>
-            <label class="form-check-label">
-              Li e concordo com o uso dos meus dados.
-            </label>
+            <label class="form-check-label">Li e concordo com o uso dos meus dados.</label>
           </div>
         </div>
-
       </div>
     </div>
 
@@ -127,15 +102,13 @@
     <div class="card mb-3">
       <div class="card-header">Dados do produtor</div>
       <div class="card-body">
-
         <input class="form-control mb-2" name="nome" placeholder="Nome completo" required>
         <input class="form-control mb-2" name="cargo" placeholder="Função / Cargo">
         <input class="form-control mb-2" name="empresa" placeholder="Empresa / Fazenda">
-       <input class="form-control  mb-2" name="telefone"id="telefone"placeholder="Telefone"inputmode="numeric"
-  autocomplete="tel"maxlength="15"required>
+        <input class="form-control mb-2" name="telefone" id="telefone" placeholder="Telefone"
+               inputmode="numeric" autocomplete="tel" maxlength="15" required>
         <input class="form-control mb-2" name="email" type="email" placeholder="E-mail" required>
         <input class="form-control mb-2" name="cidade" placeholder="Cidade onde planta" required>
-
         <select class="form-select mb-2" name="uf" required>
           <option value="">Estado (UF)</option>
           <option>AC</option><option>AL</option><option>AP</option><option>AM</option>
@@ -146,10 +119,8 @@
           <option>RS</option><option>RO</option><option>RR</option><option>SC</option>
           <option>SP</option><option>SE</option><option>TO</option>
         </select>
-
         <input class="form-control mb-3" name="area" type="number" min="1"
                placeholder="Área plantada com soja (ha)" required>
-
         <p><strong>Você já planta Stine?</strong></p>
         <div class="form-check">
           <input class="form-check-input" type="radio" name="planta_stine" value="Sim" required>
@@ -159,188 +130,140 @@
           <input class="form-check-input" type="radio" name="planta_stine" value="Não">
           <label class="form-check-label">Não</label>
         </div>
-
-        <input class="form-control mb-3"
-               name="qual_stine"
-               placeholder="Se sim, qual híbrido ou variedade?">
-
-        <input class="form-control"
-               name="fornecedor_semente"
-               placeholder="De quem você compra sua semente?"
-               required>
+        <input class="form-control mb-3" name="qual_stine" placeholder="Se sim, qual híbrido ou variedade?">
+        <input class="form-control" name="fornecedor_semente" placeholder="De quem você compra sua semente?" required>
       </div>
     </div>
 
-<!-- PARÂMETROS TÉCNICOS -->
-<div class="card mb-3">
-<div class="card-header">Parâmetros técnicos</div>
-<div class="card-body">
+    <!-- PARÂMETROS TÉCNICOS -->
+    <div class="card mb-3">
+      <div class="card-header">Parâmetros técnicos</div>
+      <div class="card-body">
+        <div id="paramSojaDisplay">
+          <strong>SOJA</strong><br>
+          Variedade: <span id="variedadeSojaText">—</span><br>
+          População final: <span id="populacaoFinalSojaText">—</span>
+          <hr>
+        </div>
+        <div id="paramMilhoDisplay">
+          <strong>MILHO</strong><br>
+          Híbrido: <span id="hibridoMilhoText">—</span><br>
+          PMG: <span id="pmgMilhoText">—</span><br>
+          População final: <span id="populacaoFinalMilhoText">—</span>
+        </div>
+      </div>
+    </div>
 
-  <!-- ▼ BLOCO SOJA (controlado por cultura ativa) -->
-  <div id="paramSojaDisplay">
-    <strong>SOJA</strong><br>
-    Variedade: <span id="variedadeSojaText">—</span><br>
-    População final: <span id="populacaoFinalSojaText">—</span>
-    <hr>
-  </div>
+    <!-- CAMPOS OCULTOS -->
+    <input type="hidden" id="variedade_soja"        name="variedade_soja">
+    <input type="hidden" id="populacao_final_soja"  name="populacao_final_soja">
+    <input type="hidden" id="hibrido_milho"          name="hibrido_milho">
+    <input type="hidden" id="pmg_milho"              name="pmg_milho">
+    <input type="hidden" id="populacao_final_milho"  name="populacao_final_milho">
 
-  <!-- ▼ BLOCO MILHO (controlado por cultura ativa) -->
-  <div id="paramMilhoDisplay">
-    <strong>MILHO</strong><br>
-    Híbrido: <span id="hibridoMilhoText">—</span><br>
-    PMG: <span id="pmgMilhoText">—</span><br>
-    População final: <span id="populacaoFinalMilhoText">—</span>
-  </div>
+    <!-- ESTIMATIVA SOJA -->
+    <div class="card mb-3" id="secaoEstimativaSoja">
+      <div class="card-header">Estimativa soja</div>
+      <div class="card-body">
+        <input class="form-control mb-2" id="vagens"        name="vagens"       type="number" placeholder="Vagens/planta"             required>
+        <input class="form-control mb-2" id="graos"         name="graos"        type="number" placeholder="Grãos/planta"              required>
+        <input class="form-control"      id="produtividade" name="produtividade" type="number" step="0.1" placeholder="Produtividade (sc/ha)" required>
+      </div>
+    </div>
 
-</div>
-</div>
+    <!-- ESTIMATIVA MILHO -->
+    <div class="card mb-3" id="secaoEstimativaMilho">
+      <div class="card-header">Estimativa milho</div>
+      <div class="card-body">
+        <input class="form-control mb-2" id="graos_milho"        name="graos_milho"        type="number" placeholder="Grãos por espiga (média)" required>
+        <input class="form-control"      id="produtividade_milho" name="produtividade_milho" type="number" step="0.1" placeholder="Produtividade (sc/ha)" required>
+      </div>
+    </div>
 
-<!-- CAMPOS OCULTOS -->
-<input type="hidden" id="variedade_soja" name="variedade_soja">
-<input type="hidden" id="populacao_final_soja" name="populacao_final_soja">
-<input type="hidden" id="hibrido_milho" name="hibrido_milho">
-<input type="hidden" id="pmg_milho" name="pmg_milho">
-<input type="hidden" id="populacao_final_milho" name="populacao_final_milho">
-
-<!-- ESTIMATIVA SOJA -->
-<!-- ▼ id adicionado para controle de visibilidade por cultura -->
-<div class="card mb-3" id="secaoEstimativaSoja">
-<div class="card-header">Estimativa soja</div>
-<div class="card-body">
-<input class="form-control mb-2" id="vagens" name="vagens" type="number" placeholder="Vagens/planta" required>
-<input class="form-control mb-2" id="graos" name="graos" type="number" placeholder="Grãos/planta" required>
-<input class="form-control" id="produtividade" name="produtividade" type="number" step="0.1" placeholder="Produtividade (sc/ha)" required>
-</div>
-</div>
-
-<!-- ESTIMATIVA MILHO -->
-<!-- ▼ id adicionado para controle de visibilidade por cultura -->
-<div class="card mb-3" id="secaoEstimativaMilho">
-<div class="card-header">Estimativa milho</div>
-<div class="card-body">
-<input class="form-control mb-2" id="graos_milho" name="graos_milho" type="number" placeholder="Grãos por espiga (média)" required>
-<input class="form-control" id="produtividade_milho" name="produtividade_milho" type="number" step="0.1" placeholder="Produtividade (sc/ha)" required>
-</div>
-</div>
-
-    <button type="submit" class="btn btn-success w-100">
-      Enviar participação
-    </button>
+    <button type="submit" class="btn btn-success w-100">Enviar participação</button>
   </form>
 
-  <!-- ADMIN -->
-  <button type="button" class="btn btn-outline-secondary mt-4 w-100" onclick="abrirAdmin()">
-    Área Administrativa
+  <!-- BOTÃO ADMIN -->
+  <button id="btnAdmin" type="button" class="btn btn-outline-secondary mt-4 w-100"
+          style="cursor:pointer;">
+    ⚙️ Área Administrativa
   </button>
+
+  <!-- OVERLAY SENHA -->
+  <div id="senhaSection" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;">
+    <div style="background:#fff; border-radius:12px; padding:24px; width:100%; max-width:360px; box-shadow:0 8px 32px rgba(0,0,0,0.3);">
+      <h5 style="margin-bottom:16px;">⚙️ Área Administrativa</h5>
+      <label class="mb-1">Digite a senha:</label>
+      <input type="password" id="senhaInput" class="form-control mt-1" placeholder="Senha" autocomplete="off">
+      <div id="senhaErro" style="display:none; color:#dc3545; margin-top:8px; font-size:0.9rem;">❌ Senha incorreta.</div>
+      <button type="button" id="btnConfirmarSenha" class="btn btn-success w-100 mt-3" style="cursor:pointer;">Entrar</button>
+      <button type="button" id="btnFecharSenha"    class="btn btn-outline-secondary w-100 mt-2" style="cursor:pointer;">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- OVERLAY ADMIN -->
+  <div id="adminSection" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; align-items:flex-start; justify-content:center; padding:20px; box-sizing:border-box; overflow-y:auto; -webkit-overflow-scrolling:touch;">
+    <div style="background:#fff; border-radius:12px; padding:24px; width:100%; max-width:480px; margin:auto; box-shadow:0 8px 32px rgba(0,0,0,0.3);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h5 style="margin:0;">Parâmetros técnicos</h5>
+        <button type="button" id="btnFecharAdmin" style="background:none; border:none; font-size:1.6rem; line-height:1; cursor:pointer; color:#666;">×</button>
+      </div>
+      <label class="fw-bold">Cultura ativa no evento</label>
+      <select id="admin_cultura" class="form-select mb-3">
+        <option value="Ambas">🌱 Soja e Milho (ambas)</option>
+        <option value="Soja">🟡 Apenas Soja</option>
+        <option value="Milho">🟠 Apenas Milho</option>
+      </select>
+      <hr>
+      <div id="adminCamposSoja">
+        <label>Variedade soja</label>
+        <input id="admin_variedade_soja" class="form-control mb-2">
+        <label>População final soja</label>
+        <input id="admin_pop_soja" class="form-control mb-2">
+      </div>
+      <div id="adminCamposMilho">
+        <label>Híbrido milho</label>
+        <input id="admin_hibrido_milho" class="form-control mb-2">
+        <label>PMG milho</label>
+        <input id="admin_pmg_milho" class="form-control mb-2">
+        <label>População final milho</label>
+        <input id="admin_pop_milho" class="form-control mb-2">
+      </div>
+      <div id="msgAdminSucesso" style="display:none; color:#198754; font-weight:bold; margin-bottom:8px;">
+        ✅ Parâmetros salvos!
+      </div>
+      <div class="d-flex gap-2 mt-2">
+        <button type="button" id="btnSalvarAdmin" class="btn btn-success flex-grow-1" style="cursor:pointer;">Salvar parâmetros</button>
+        <button type="button" id="btnFecharAdmin2" class="btn btn-secondary" style="cursor:pointer;">Fechar</button>
+      </div>
+    </div>
+  </div>
 
   <!-- OFFLINE -->
   <div id="offlineModule" class="card mt-3 d-none">
     <div class="card-header fw-bold">Sincronização de Cadastros</div>
     <div class="card-body text-center">
-      <div class="mb-2">
-        Cadastros pendentes:
-        <strong><span id="offlineCount">0</span></strong>
-      </div>
-
-      <button class="btn btn-outline-success mb-2 w-100" onclick="sincronizarOffline()">
-        🔄 Sincronizar agora
-      </button>
-
-      <button class="btn btn-outline-primary w-100" onclick="baixarOfflineXLSX()">
-        ⬇️ Baixar cadastros offline (XLSX)
-      </button>
+      <div class="mb-2">Cadastros pendentes: <strong><span id="offlineCount">0</span></strong></div>
+      <button class="btn btn-outline-success mb-2 w-100" id="btnSincronizar" style="cursor:pointer;">🔄 Sincronizar agora</button>
+      <button class="btn btn-outline-primary  w-100"     onclick="baixarOfflineXLSX()">⬇️ Baixar cadastros offline (XLSX)</button>
     </div>
   </div>
 
 </div>
 
-<script src="app.js?v=3" defer></script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- App JS — sem defer, posicionado após todo o HTML para garantir DOM pronto -->
+<script src="app.js?v=5"></script>
 
 <script>
   if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
+    window.addEventListener("load", function() {
       navigator.serviceWorker.register("./service-worker.js");
     });
   }
 </script>
 
-<!-- MODAL SENHA (substitui prompt() para compatibilidade com iPad PWA) -->
-<div class="modal fade" id="senhaModal" tabindex="-1" style="display:none;">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Área Administrativa</h5>
-      </div>
-      <div class="modal-body">
-        <label class="mb-1">Digite a senha:</label>
-        <input type="password" id="senhaInput" class="form-control" placeholder="Senha">
-        <div id="senhaErro" class="text-danger mt-2 d-none">Senha incorreta.</div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-success w-100" onclick="confirmarSenha()">Entrar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL ADMINISTRATIVO -->
-<div class="modal fade" id="adminModal" tabindex="-1" style="display:none;">
-  <div class="modal-dialog">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <h5 class="modal-title">Parâmetros técnicos</h5>
-        <button type="button" class="btn-close" onclick="fecharAdmin()"></button>
-      </div>
-
-      <div class="modal-body">
-
-        <!-- ▼ CAMPO NOVO: seleção de cultura ativa no evento -->
-        <label class="fw-bold">Cultura ativa no evento</label>
-        <select id="admin_cultura" class="form-select mb-3" onchange="alternarCamposAdmin(this.value)">
-          <option value="Ambas">🌱 Soja e Milho (ambas)</option>
-          <option value="Soja">🟡 Apenas Soja</option>
-          <option value="Milho">🟠 Apenas Milho</option>
-        </select>
-        <hr>
-
-        <!-- ▼ campos de soja agrupados para ocultar/exibir -->
-        <div id="adminCamposSoja">
-          <label>Variedade soja</label>
-          <input id="admin_variedade_soja" class="form-control mb-2">
-
-          <label>População final soja</label>
-          <input id="admin_pop_soja" class="form-control mb-2">
-        </div>
-
-        <!-- ▼ campos de milho agrupados para ocultar/exibir -->
-        <div id="adminCamposMilho">
-          <label>Híbrido milho</label>
-          <input id="admin_hibrido_milho" class="form-control mb-2">
-
-          <label>PMG milho</label>
-          <input id="admin_pmg_milho" class="form-control mb-2">
-
-          <label>População final milho</label>
-          <input id="admin_pop_milho" class="form-control mb-2">
-        </div>
-
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-success" onclick="salvarAdmin()">
-          Salvar parâmetros
-        </button>
-        <button type="button" class="btn btn-secondary" onclick="fecharAdmin()">
-          Fechar
-        </button>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  
 </body>
 </html>
