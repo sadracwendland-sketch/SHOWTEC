@@ -4,7 +4,8 @@
 const AUTOMATE_URL =
   "https://defaultc18e5a39b8224257bd2a34c15bd7b4.77.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/8d7d7c22d76e4bab80ccb6c69ec213bd/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=CiMry-yaLyxnARZq1XlAZMDSjeJ7zE9szZ0tjbW-3zw";
 
-const LOCAL_EVENTO = "Showtec";
+const AUTOMATE_URL_2 =
+  "https://defaultc18e5a39b8224257bd2a34c15bd7b4.77.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/54ceef6d13c64d7a8f1085e46c2cefc7/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=9KrjOvGsi9MObheaegNPDDzFYJrDu6UqwNW5ALh-y3g";
 
 const ADMIN_PASSWORD = "stine2026";
 
@@ -146,27 +147,57 @@ function alternarCamposAdmin(cultura) {
 // ADMIN
 // ===============================
 function abrirAdmin() {
-  var senha = prompt("Digite a senha:");
+  // Abre modal de senha customizado (compatível com iPad PWA)
+  var senhaModal = document.getElementById("senhaModal");
+  var senhaInput = document.getElementById("senhaInput");
+  var senhaErro  = document.getElementById("senhaErro");
+
+  if (senhaInput) senhaInput.value = "";
+  if (senhaErro)  senhaErro.classList.add("d-none");
+
+  try {
+    var m = new bootstrap.Modal(senhaModal);
+    m.show();
+  } catch(e) {
+    senhaModal.style.display = "block";
+    senhaModal.classList.add("show");
+  }
+
+  // Foca no campo de senha após abrir
+  setTimeout(function() { if (senhaInput) senhaInput.focus(); }, 400);
+}
+
+function confirmarSenha() {
+  var senhaInput = document.getElementById("senhaInput");
+  var senhaErro  = document.getElementById("senhaErro");
+  var senha = senhaInput ? senhaInput.value : "";
 
   if (senha !== ADMIN_PASSWORD) {
-    alert("Senha incorreta");
+    if (senhaErro) senhaErro.classList.remove("d-none");
+    if (senhaInput) { senhaInput.value = ""; senhaInput.focus(); }
     return;
   }
 
+  // Fecha modal de senha
+  var senhaModalEl = document.getElementById("senhaModal");
+  try {
+    var sm = bootstrap.Modal.getInstance(senhaModalEl);
+    if (sm) sm.hide(); else senhaModalEl.style.display = "none";
+  } catch(e) { senhaModalEl.style.display = "none"; }
+
+  // Abre modal admin
   var modalEl = document.getElementById("adminModal");
-
-  if (!modalEl) {
-    alert("Modal não encontrado");
-    return;
+  try {
+    var modal = new bootstrap.Modal(modalEl);
+    modal.show();
+  } catch(e) {
+    modalEl.style.display = "block";
+    modalEl.classList.add("show");
   }
-
-  var modal = new bootstrap.Modal(modalEl);
-  modal.show();
 
   // Preenche os campos com valores já salvos
   var dados = JSON.parse(localStorage.getItem(STORAGE_ADMIN) || "{}");
 
-  // ▼ carrega seleção de cultura ativa e aplica visibilidade imediata dos campos
   var culturaEl = document.getElementById("admin_cultura");
   if (culturaEl) {
     culturaEl.value = dados.cultura || "Ambas";
@@ -239,13 +270,21 @@ window.addEventListener("DOMContentLoaded", () => {
 // ENVIO
 // ===============================
 async function enviarPayload(payload) {
-  var r = await fetch(AUTOMATE_URL, {
+  var body = JSON.stringify(payload);
+  var opts = {
     method: "POST",
     headers: { "Content-Type": "application/json", "Accept": "application/json" },
-    body: JSON.stringify(payload)
-  });
+    body: body
+  };
 
-  if (!r.ok) throw new Error("Erro HTTP " + r.status);
+  // Dispara para as duas URLs em paralelo — se qualquer uma falhar, lança erro
+  var [r1, r2] = await Promise.all([
+    fetch(AUTOMATE_URL,   opts),
+    fetch(AUTOMATE_URL_2, opts)
+  ]);
+
+  if (!r1.ok) throw new Error("Erro planilha 1: HTTP " + r1.status);
+  if (!r2.ok) throw new Error("Erro planilha 2: HTTP " + r2.status);
 }
 
 // ===============================
@@ -292,7 +331,6 @@ if (form) {
 
     var payload = {
       DataHora: new Date().toISOString(),
-      Local: LOCAL_EVENTO,
 
       Segue_Redes: form.segue ? form.segue.value : "",
       Aceite_LGPD: form.lgpd && form.lgpd.checked ? "Sim" : "Não",
@@ -482,6 +520,17 @@ async function sincronizarOffline() {
 }
 
 window.sincronizarOffline = sincronizarOffline;
+window.confirmarSenha = confirmarSenha;
+
+// Enter no campo de senha confirma
+document.addEventListener("DOMContentLoaded", function() {
+  var senhaInput = document.getElementById("senhaInput");
+  if (senhaInput) {
+    senhaInput.addEventListener("keypress", function(e) {
+      if (e.key === "Enter") confirmarSenha();
+    });
+  }
+});
 
 // ===============================
 // LISTENERS

@@ -60,10 +60,11 @@
     <div class="card-header fw-bold">Como participar?</div>
     <div class="card-body">
       <ul class="mb-0">
-        <li>Observe a espiga de milho exposta.</li>
+        <li>Observe a planta de soja exposta.</li>
         <li>Dê seu palpite respondendo três perguntas:</li>
         <ul>
-          <li>Quantos grãos há na espiga?</li>
+          <li>Quantas vagens há na planta?</li>
+          <li>Quantos grãos há na planta?</li>
           <li>Qual a produtividade estimada (sc/ha)?</li>
         </ul>
         <li>Preencha o formulário com seus dados.</li>
@@ -262,6 +263,25 @@
     });
   }
 </script>
+
+<!-- MODAL SENHA (substitui prompt() para compatibilidade com iPad PWA) -->
+<div class="modal fade" id="senhaModal" tabindex="-1" style="display:none;">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Área Administrativa</h5>
+      </div>
+      <div class="modal-body">
+        <label class="mb-1">Digite a senha:</label>
+        <input type="password" id="senhaInput" class="form-control" placeholder="Senha">
+        <div id="senhaErro" class="text-danger mt-2 d-none">Senha incorreta.</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success w-100" onclick="confirmarSenha()">Entrar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- MODAL ADMINISTRATIVO -->
 <div class="modal fade" id="adminModal" tabindex="-1" style="display:none;">
