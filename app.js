@@ -4,11 +4,15 @@
 const AUTOMATE_URL =
   "https://defaultc18e5a39b8224257bd2a34c15bd7b4.77.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/8d7d7c22d76e4bab80ccb6c69ec213bd/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=CiMry-yaLyxnARZq1XlAZMDSjeJ7zE9szZ0tjbW-3zw";
 
+const SUPABASE_URL = "https://joshgtpeemjdqbofcyhr.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impvc2hndHBlZW1qZHFib2ZjeWhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3OTE3MjQsImV4cCI6MjA5NDM2NzcyNH0.PS2xxJmKHeRelN-qQJe7bV5JYTzyx2_PmvZqlrVGUaM";
+
 const LOCAL_EVENTO    = "Showtec";
 const ADMIN_PASSWORD  = "stine2026";
 const STORAGE_QUEUE    = "stine_fila_offline";
 const STORAGE_ADMIN    = "stine_parametros_admin";
 const STORAGE_ENVIADOS = "stine_enviados";
+const STORAGE_REG     = "stine_registros";
 
 // ===============================
 // UTILITÁRIO
@@ -174,7 +178,7 @@ function carregarParametrosAdmin() {
 }
 
 // ===============================
-// ENVIO
+// ENVIO — Power Automate
 // ===============================
 async function enviarPayload(payload) {
   var r = await fetch(AUTOMATE_URL, {
@@ -183,6 +187,55 @@ async function enviarPayload(payload) {
     body: JSON.stringify(payload)
   });
   if (!r.ok) throw new Error("Erro HTTP " + r.status);
+}
+
+// ===============================
+// ENVIO — Supabase (base central)
+// ===============================
+async function salvarNoSupabase(payload) {
+  try {
+    var nomeEvento = localStorage.getItem("stine_nome_evento") || LOCAL_EVENTO;
+    var row = {
+      local_evento:             LOCAL_EVENTO,
+      nome_evento:              nomeEvento,
+      data_hora:                payload.DataHora,
+      segue_redes:              payload.Segue_Redes              || "",
+      aceite_lgpd:              payload.Aceite_LGPD              || "",
+      nome:                     payload.Nome                     || "",
+      cargo:                    payload.Cargo                    || "",
+      empresa_fazenda:          payload.empresa_fazenda          || "",
+      telefone:                 payload.Telefone                 || "",
+      email:                    payload.Email                    || "",
+      cidade:                   payload.Cidade                   || "",
+      uf:                       payload.UF                       || "",
+      area_soja_ha:             payload.Area_Soja_ha             || "",
+      planta_stine:             payload.planta_stine             || "",
+      qual_stine:               payload.qual_stine               || "",
+      fornecedor_semente:       payload.fornecedor_semente       || "",
+      variedade_soja:           payload.variedade_soja           || "",
+      populacao_final_soja:     payload.populacao_final_soja     || "",
+      hibrido_milho:            payload.hibrido_milho            || "",
+      pmg_milho:                payload.pmg_milho                || "",
+      populacao_final_milho:    payload.populacao_final_milho    || "",
+      vagens_planta:            payload.vagens_planta            || "",
+      graos_vagem:              payload.graos_vagem              || "",
+      produtividade_sc_ha:      payload.produtividade_sc_ha      || "",
+      graos_espiga_milho:       payload.graos_espiga_milho       || "",
+      produtividade_milho_sc_ha: payload.produtividade_milho_sc_ha || ""
+    };
+    await fetch(SUPABASE_URL + "/rest/v1/stine_coletas", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_KEY,
+        "Authorization": "Bearer " + SUPABASE_KEY,
+        "Prefer": "return=minimal"
+      },
+      body: JSON.stringify(row)
+    });
+  } catch(e) {
+    console.warn("Supabase: falha ao salvar (nao critico):", e);
+  }
 }
 
 // ===============================
@@ -258,13 +311,22 @@ if (stineForm) {
     try {
       if (navigator.onLine) {
         await enviarPayload(payload);
+        salvarNoSupabase(payload);
         enviados.push(hash);
         localStorage.setItem(STORAGE_ENVIADOS, JSON.stringify(enviados));
         salvarLog("enviado", payload, "ok");
+        // Salva cópia local para base de dados e ranking
+        var regs = JSON.parse(localStorage.getItem(STORAGE_REG) || "[]");
+        regs.push(payload);
+        localStorage.setItem(STORAGE_REG, JSON.stringify(regs));
         alert("Participação enviada com sucesso!");
       } else {
         fila.push({ hash: hash, payload: payload }); setFila(fila);
         salvarLog("salvo_offline", payload, "pendente");
+        // Salva cópia local para base de dados e ranking
+        var regsOff = JSON.parse(localStorage.getItem(STORAGE_REG) || "[]");
+        regsOff.push(payload);
+        localStorage.setItem(STORAGE_REG, JSON.stringify(regsOff));
         alert("Sem internet. Dados salvos localmente.");
       }
     } catch (erro) {

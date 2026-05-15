@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Resultados Admin Showtec — Stine 2026</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .tab-btn{cursor:pointer;padding:9px 16px;border:none;background:#e9ecef;border-radius:8px 8px 0 0;font-weight:bold;font-size:.88rem;}
+    .tab-btn.ativo{background:#0a7c2f;color:#fff;}
+    .tab-pane{display:none;}
+    .tab-pane.ativo{display:block;}
+    .rank-1 td{background:#fffbea;}
+    .rank-2 td{background:#f8f8f8;}
+    .rank-3 td{background:#fff5ec;}
+    .badge-c{background:#198754;color:#fff;border-radius:4px;padding:2px 6px;font-size:.78rem;}
+    .badge-d{background:#dc3545;color:#fff;border-radius:4px;padding:2px 6px;font-size:.78rem;}
+    .sc{background:#fff;border-radius:10px;padding:14px;border:1px solid #dee2e6;text-align:center;}
+    .sn{font-size:1.8rem;font-weight:bold;color:#0a7c2f;}
+    .sl{font-size:.82rem;color:#666;}
+    #gate{display:flex;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);z-index:9999;align-items:center;justify-content:center;}
+    .spin{display:inline-block;animation:spin 1s linear infinite;}
+    @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body class="bg-light">
+
+<div id="gate">
+  <div style="background:#fff;border-radius:14px;padding:32px;width:92%;max-width:340px;box-shadow:0 8px 40px rgba(0,0,0,.35);text-align:center;">
+    <img src="logo-stine.png" style="max-height:52px;margin-bottom:12px;" alt="Stine" onerror="this.style.display='none'">
+    <h5 style="margin-bottom:4px;">🔒 Resultados — Admin</h5>
+    <p style="font-size:.85rem;color:#888;margin-bottom:14px;">Acesso restrito ao administrador</p>
+    <input type="password" id="gSenha" class="form-control mb-2" placeholder="Senha" autocomplete="off">
+    <div id="gErro" style="display:none;color:#dc3545;margin-bottom:8px;font-size:.88rem;">❌ Senha incorreta.</div>
+    <button id="gBtn" class="btn btn-success w-100" style="cursor:pointer;">Entrar</button>
+  </div>
+</div>
+
+<div id="app" style="display:none;">
+<div class="container-fluid py-3 px-3">
+
+  <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div class="d-flex align-items-center gap-2">
+      <img src="logo-stine.png" style="max-height:42px;" alt="Stine" onerror="this.style.display='none'">
+      <div>
+        <h5 class="mb-0 text-success">Dashboard de Resultados</h5>
+        <small class="text-muted" id="lblEvento">—</small>
+      </div>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+      <button id="btnSync" class="btn btn-outline-success btn-sm" style="cursor:pointer;">🔄 Sincronizar dados</button>
+      <span id="lblSync" style="font-size:.8rem;color:#888;"></span>
+      <a href="index.html" class="btn btn-outline-secondary btn-sm">← Formulário</a>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body py-2">
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <label class="mb-0 fw-bold" style="white-space:nowrap;">📅 Nome do Evento:</label>
+        <input type="text" id="nomeEvento" class="form-control form-control-sm" style="max-width:300px;" placeholder="Ex: Agrobrasília 2026">
+        <button id="btnSalvarEvento" class="btn btn-sm btn-success" style="cursor:pointer;">Salvar</button>
+        <span id="msgEvento" style="display:none;color:#198754;font-size:.85rem;">✅ Salvo</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-2 mb-3">
+    <div class="col-6 col-md-3"><div class="sc"><div class="sn" id="sTotal">—</div><div class="sl">Participantes</div></div></div>
+    <div class="col-6 col-md-3"><div class="sc"><div class="sn text-success" id="sClass">—</div><div class="sl">Classificados</div></div></div>
+    <div class="col-6 col-md-3"><div class="sc"><div class="sn text-danger" id="sDesclass">—</div><div class="sl">Desclassificados</div></div></div>
+    <div class="col-6 col-md-3"><div class="sc"><div class="sn text-primary" id="sHa">—</div><div class="sl">Hectares totais</div></div></div>
+  </div>
+
+  <div class="d-flex gap-1 flex-wrap mb-0">
+    <button class="tab-btn ativo" onclick="abrirTab('Dias')">📐 Valores por Dia</button>
+    <button class="tab-btn" onclick="abrirTab('Ranking')">🏆 Ranking</button>
+    <button class="tab-btn" onclick="abrirTab('Exportar')">📥 Exportar</button>
+    <button class="tab-btn" onclick="abrirTab('Config')">⚙️ Configurações</button>
+  </div>
+
+  <!-- TAB VALORES POR DIA -->
+  <div id="tabDias" class="tab-pane ativo card" style="border-radius:0 8px 8px 8px;">
+    <div class="card-body">
+      <p class="text-muted mb-3" style="font-size:.9rem;">Configure os valores reais de cada dia. Os dados ficam salvos no Supabase — visíveis em qualquer aparelho do administrador.</p>
+      <div class="row g-2 mb-2">
+        <div class="col-md-3">
+          <label class="form-label fw-bold">Data</label>
+          <input type="date" id="dData" class="form-control">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-bold">Cultura do dia</label>
+          <select id="dCultura" class="form-select" onchange="toggleCamposDia()">
+            <option value="Ambas">🌱 Soja e Milho</option>
+            <option value="Soja">🟡 Apenas Soja</option>
+            <option value="Milho">🟠 Apenas Milho</option>
+          </select>
+        </div>
+      </div>
+      <div id="dSecSoja">
+        <h6 class="text-success fw-bold mt-3">🌱 Soja</h6>
+        <div class="row g-2 mb-2">
+          <div class="col-md-3"><label class="form-label">Variedade</label><input type="text" id="dVarSoja" class="form-control" placeholder="ex: 76KA72"></div>
+          <div class="col-md-3"><label class="form-label">Vagens reais/planta</label><input type="number" id="dVagens" class="form-control" placeholder="ex: 90"></div>
+          <div class="col-md-3"><label class="form-label">Grãos reais/planta</label><input type="number" id="dGraos" class="form-control" placeholder="ex: 225"></div>
+          <div class="col-md-3"><label class="form-label">Produtividade real (sc/ha)</label><input type="number" step="0.1" id="dProd" class="form-control" placeholder="ex: 91"></div>
+        </div>
+      </div>
+      <div id="dSecMilho">
+        <h6 class="text-warning fw-bold mt-3">🌽 Milho</h6>
+        <div class="row g-2 mb-2">
+          <div class="col-md-3"><label class="form-label">Híbrido</label><input type="text" id="dHibrido" class="form-control" placeholder="ex: STN 9717"></div>
+          <div class="col-md-3"><label class="form-label">Grãos reais/espiga</label><input type="number" id="dEspiga" class="form-control" placeholder="ex: 587"></div>
+          <div class="col-md-3"><label class="form-label">Produtividade milho (sc/ha)</label><input type="number" step="0.1" id="dProdMilho" class="form-control" placeholder="ex: 215"></div>
+        </div>
+      </div>
+      <div id="msgDia" style="display:none;color:#198754;font-weight:bold;margin-bottom:8px;">✅ Valores salvos no Supabase!</div>
+      <div id="msgDiaErro" style="display:none;color:#dc3545;font-weight:bold;margin-bottom:8px;">❌ Erro ao salvar. Verifique conexão.</div>
+      <button id="btnSalvarDia" class="btn btn-success mt-2" style="cursor:pointer;">💾 Salvar valores deste dia</button>
+      <hr class="my-4">
+      <h6 class="fw-bold">Dias configurados</h6>
+      <div id="listaDias" class="mt-2"><p class="text-muted">Carregando...</p></div>
+    </div>
+  </div>
+
+  <!-- TAB RANKING -->
+  <div id="tabRanking" class="tab-pane card" style="border-radius:0 8px 8px 8px;">
+    <div class="card-body">
+      <div class="row g-2 mb-3 align-items-end">
+        <div class="col-md-3">
+          <label class="form-label fw-bold">Período</label>
+          <select id="fPeriodo" class="form-select" onchange="onFiltroPeriodo()">
+            <option value="tudo">Todo o evento</option>
+            <option value="dia">Dia específico</option>
+            <option value="range">Intervalo de datas</option>
+          </select>
+        </div>
+        <div class="col-md-2" id="fDiaCol" style="display:none;">
+          <label class="form-label">Dia</label>
+          <select id="fDia" class="form-select" onchange="renderRanking()"></select>
+        </div>
+        <div class="col-md-2" id="fIniCol" style="display:none;">
+          <label class="form-label">De</label>
+          <input type="date" id="fIni" class="form-control" onchange="renderRanking()">
+        </div>
+        <div class="col-md-2" id="fFimCol" style="display:none;">
+          <label class="form-label">Até</label>
+          <input type="date" id="fFim" class="form-control" onchange="renderRanking()">
+        </div>
+        <div class="col-md-2">
+          <label class="form-label fw-bold">Mostrar top</label>
+          <select id="fN" class="form-select" onchange="renderRanking()">
+            <option value="3">Top 3</option>
+            <option value="5" selected>Top 5</option>
+            <option value="10">Top 10</option>
+            <option value="20">Top 20</option>
+            <option value="999">Todos classificados</option>
+          </select>
+        </div>
+      </div>
+      <div id="avSemReais" class="alert alert-warning" style="display:none;">⚠️ Configure os valores reais na aba "Valores por Dia".</div>
+      <div id="avSemDados" class="alert alert-info" style="display:none;">ℹ️ Nenhum participante no período selecionado. Clique em 🔄 Sincronizar.</div>
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle mb-0" style="font-size:.88rem;">
+          <thead class="table-success">
+            <tr>
+              <th class="text-center" style="width:50px">Pos.</th>
+              <th>Nome</th>
+              <th>Cidade / UF</th>
+              <th class="text-center">Área (ha)</th>
+              <th class="text-center">Data</th>
+              <th class="text-center">Pontuação</th>
+              <th class="text-center">Status</th>
+            </tr>
+          </thead>
+          <tbody id="tbRanking"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB EXPORTAR -->
+  <div id="tabExportar" class="tab-pane card" style="border-radius:0 8px 8px 8px;">
+    <div class="card-body">
+      <h6 class="fw-bold mb-3">📥 Exportação</h6>
+      <div class="row g-2 mb-4 align-items-end">
+        <div class="col-md-3">
+          <label class="form-label fw-bold">Período</label>
+          <select id="ePeriodo" class="form-select" onchange="onExpPeriodo()">
+            <option value="tudo">Todo o evento</option>
+            <option value="dia">Dia específico</option>
+            <option value="range">Intervalo de datas</option>
+          </select>
+        </div>
+        <div class="col-md-2" id="eDiaCol" style="display:none;">
+          <label class="form-label">Dia</label>
+          <select id="eDia" class="form-select"></select>
+        </div>
+        <div class="col-md-2" id="eIniCol" style="display:none;">
+          <label class="form-label">De</label>
+          <input type="date" id="eIni" class="form-control">
+        </div>
+        <div class="col-md-2" id="eFimCol" style="display:none;">
+          <label class="form-label">Até</label>
+          <input type="date" id="eFim" class="form-control">
+        </div>
+      </div>
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <div class="card border-success h-100">
+            <div class="card-body text-center">
+              <div style="font-size:2rem;">📊</div>
+              <h6 class="fw-bold mt-2">Completo + Pontuação</h6>
+              <p class="text-muted" style="font-size:.88rem;">Todos os registros com cálculos de pontuação e status</p>
+              <button id="btnExpCompleto" class="btn btn-success w-100" style="cursor:pointer;">⬇️ Baixar XLSX Completo</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card border-primary h-100">
+            <div class="card-body text-center">
+              <div style="font-size:2rem;">🏆</div>
+              <h6 class="fw-bold mt-2">Somente Classificados</h6>
+              <p class="text-muted" style="font-size:.88rem;">Apenas classificados, ordenados por pontuação</p>
+              <button id="btnExpRanking" class="btn btn-primary w-100" style="cursor:pointer;">⬇️ Baixar Ranking XLSX</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="alert alert-secondary" style="font-size:.88rem;">
+        <strong>Registros no Supabase:</strong> <span id="totalRegs">—</span>
+        &nbsp;•&nbsp; Backup automático via Power Automate → Excel
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB CONFIG -->
+  <div id="tabConfig" class="tab-pane card" style="border-radius:0 8px 8px 8px;">
+    <div class="card-body">
+      <h6 class="fw-bold mb-3">⚙️ Gerenciamento de Dados</h6>
+      <div class="alert alert-info" style="font-size:.9rem;">Os dados são armazenados no Supabase e <strong>nunca apagados automaticamente</strong>. O backup no Excel não é afetado por nenhuma ação aqui.</div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="card border-danger">
+            <div class="card-body">
+              <h6 class="text-danger fw-bold">🗑️ Apagar registros de participantes</h6>
+              <p style="font-size:.85rem;" class="text-muted">Remove do Supabase os cadastros deste evento. O Excel de backup NÃO é afetado.</p>
+              <input type="password" id="senhaApagarRegs" class="form-control mb-2" placeholder="Confirme a senha">
+              <button id="btnApagarRegs" class="btn btn-danger w-100" style="cursor:pointer;">Apagar registros</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card border-warning">
+            <div class="card-body">
+              <h6 class="text-warning fw-bold">🗑️ Apagar valores reais por dia</h6>
+              <p style="font-size:.85rem;" class="text-muted">Remove do Supabase as configurações de valores reais de cada dia.</p>
+              <input type="password" id="senhaApagarReais" class="form-control mb-2" placeholder="Confirme a senha">
+              <button id="btnApagarReais" class="btn btn-warning w-100" style="cursor:pointer;">Apagar valores reais</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+// ===============================
+// CONFIG
+// ===============================
+const SENHA        = "stine2026";
+const LOCAL_EVENTO = "Showtec";
+const SB_URL       = "https://joshgtpeemjdqbofcyhr.supabase.co";
+const SB_KEY       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impvc2hndHBlZW1qZHFib2ZjeWhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3OTE3MjQsImV4cCI6MjA5NDM2NzcyNH0.PS2xxJmKHeRelN-qQJe7bV5JYTzyx2_PmvZqlrVGUaM";
+const SB_HEADERS   = { "Content-Type":"application/json", "apikey":SB_KEY, "Authorization":"Bearer "+SB_KEY };
+
+// Dados em memória (carregados do Supabase)
+var REGS  = [];   // registros de participantes
+var REAIS = {};   // { "2026-05-14": { cultura, varSoja, vagens, graos, prod, hibrido, espiga, prodMilho } }
+
+// ===============================
+// AUTH
+// ===============================
+document.getElementById("gBtn").onclick = function() {
+  if (document.getElementById("gSenha").value !== SENHA) {
+    document.getElementById("gErro").style.display = "block";
+    document.getElementById("gSenha").value = "";
+    return;
+  }
+  document.getElementById("gate").style.display = "none";
+  document.getElementById("app").style.display  = "block";
+  init();
+};
+document.getElementById("gSenha").onkeypress = function(e) { if (e.key==="Enter") document.getElementById("gBtn").onclick(); };
+
+function el(id) { return document.getElementById(id); }
+
+// ===============================
+// SUPABASE — helpers
+// ===============================
+async function sbGet(table, params) {
+  var url = SB_URL + "/rest/v1/" + table + "?" + params;
+  var r   = await fetch(url, { headers: SB_HEADERS });
+  if (!r.ok) throw new Error("Supabase GET erro " + r.status);
+  return await r.json();
+}
+
+async function sbPost(table, data) {
+  var r = await fetch(SB_URL + "/rest/v1/" + table, {
+    method: "POST",
+    headers: Object.assign({}, SB_HEADERS, { "Prefer": "return=minimal" }),
+    body: JSON.stringify(data)
+  });
+  if (!r.ok) throw new Error("Supabase POST erro " + r.status);
+}
+
+async function sbUpsert(table, data, onConflict) {
+  var r = await fetch(SB_URL + "/rest/v1/" + table + "?on_conflict=" + onConflict, {
+    method: "POST",
+    headers: Object.assign({}, SB_HEADERS, { "Prefer": "resolution=merge-duplicates,return=minimal" }),
+    body: JSON.stringify(data)
+  });
+  if (!r.ok) throw new Error("Supabase UPSERT erro " + r.status);
+}
+
+async function sbDelete(table, params) {
+  var r = await fetch(SB_URL + "/rest/v1/" + table + "?" + params, {
+    method: "DELETE",
+    headers: SB_HEADERS
+  });
+  if (!r.ok) throw new Error("Supabase DELETE erro " + r.status);
+}
+
+// ===============================
+// SINCRONIZAÇÃO
+// ===============================
+async function sincronizar() {
+  el("btnSync").innerHTML = '<span class="spin">🔄</span> Sincronizando...';
+  el("lblSync").textContent = "";
+  try {
+    // Carrega registros de participantes
+    var regs = await sbGet("stine_coletas",
+      "select=*&local_evento=eq." + LOCAL_EVENTO + "&order=data_hora.asc");
+    REGS = regs || [];
+
+    // Carrega valores reais
+    var reais = await sbGet("stine_valores_reais",
+      "select=*&local_evento=eq." + LOCAL_EVENTO + "&order=data.asc");
+    REAIS = {};
+    (reais || []).forEach(function(row) {
+      REAIS[row.data] = {
+        cultura: row.cultura || "Ambas",
+        varSoja: row.var_soja || "",
+        vagens:  row.vagens  || 0,
+        graos:   row.graos   || 0,
+        prod:    row.prod    || 0,
+        hibrido: row.hibrido || "",
+        espiga:  row.espiga  || 0,
+        prodMilho: row.prod_milho || 0
+      };
+    });
+
+    var agora = new Date().toLocaleTimeString("pt-BR");
+    el("lblSync").textContent = "Atualizado às " + agora;
+    atualizarStats();
+    renderListaDias();
+    popularFiltrosDias();
+    renderRanking();
+    el("totalRegs").textContent = REGS.length;
+  } catch(e) {
+    el("lblSync").textContent = "❌ Erro: " + e.message;
+    console.error(e);
+  }
+  el("btnSync").innerHTML = "🔄 Sincronizar dados";
+}
+
+// ===============================
+// INIT
+// ===============================
+function init() {
+  var nome = localStorage.getItem("stine_nome_evento") || "";
+  el("nomeEvento").value = nome;
+  el("lblEvento").textContent = nome || LOCAL_EVENTO;
+  el("dData").value = new Date().toISOString().slice(0, 10);
+  toggleCamposDia();
+  sincronizar();
+}
+
+el("btnSync").onclick = sincronizar;
+
+el("btnSalvarEvento").onclick = function() {
+  var nome = el("nomeEvento").value.trim();
+  localStorage.setItem("stine_nome_evento", nome);
+  el("lblEvento").textContent = nome || LOCAL_EVENTO;
+  el("msgEvento").style.display = "inline";
+  setTimeout(function() { el("msgEvento").style.display = "none"; }, 1800);
+};
+
+// ===============================
+// TABS
+// ===============================
+function abrirTab(nome) {
+  document.querySelectorAll(".tab-pane").forEach(function(p) { p.classList.remove("ativo"); });
+  document.querySelectorAll(".tab-btn").forEach(function(b) { b.classList.remove("ativo"); });
+  el("tab"+nome).classList.add("ativo");
+  document.querySelectorAll(".tab-btn").forEach(function(b) {
+    if (b.getAttribute("onclick") && b.getAttribute("onclick").indexOf(nome) !== -1) b.classList.add("ativo");
+  });
+  if (nome === "Ranking")  renderRanking();
+  if (nome === "Exportar") { popularFiltrosDias(); el("totalRegs").textContent = REGS.length; }
+}
+
+// ===============================
+// CAMPOS DIA
+// ===============================
+function toggleCamposDia() {
+  var c = el("dCultura").value;
+  el("dSecSoja").style.display  = (c === "Milho") ? "none" : "block";
+  el("dSecMilho").style.display = (c === "Soja")  ? "none" : "block";
+}
+
+// ===============================
+// SALVAR DIA (Supabase)
+// ===============================
+el("btnSalvarDia").onclick = async function() {
+  var data = el("dData").value;
+  if (!data) { alert("Selecione a data."); return; }
+  el("msgDia").style.display = "none";
+  el("msgDiaErro").style.display = "none";
+
+  var row = {
+    local_evento: LOCAL_EVENTO,
+    data:         data,
+    cultura:      el("dCultura").value,
+    var_soja:     el("dVarSoja").value,
+    vagens:       parseFloat(el("dVagens").value)     || 0,
+    graos:        parseFloat(el("dGraos").value)       || 0,
+    prod:         parseFloat(el("dProd").value)         || 0,
+    hibrido:      el("dHibrido").value,
+    espiga:       parseFloat(el("dEspiga").value)      || 0,
+    prod_milho:   parseFloat(el("dProdMilho").value)   || 0
+  };
+
+  try {
+    await sbUpsert("stine_valores_reais", row, "local_evento,data");
+    el("msgDia").style.display = "block";
+    setTimeout(function() { el("msgDia").style.display = "none"; }, 2500);
+    await sincronizar();
+  } catch(e) {
+    el("msgDiaErro").style.display = "block";
+    console.error(e);
+  }
+};
+
+// ===============================
+// LISTA DE DIAS
+// ===============================
+function renderListaDias() {
+  var dias = Object.keys(REAIS).sort();
+  var cont = el("listaDias");
+  if (!dias.length) { cont.innerHTML = "<p class='text-muted'>Nenhum dia configurado ainda.</p>"; return; }
+
+  cont.innerHTML = dias.map(function(d) {
+    var v   = REAIS[d];
+    var fmt = d.split("-").reverse().join("/");
+    var info = [];
+    if (v.cultura !== "Milho") info.push("🌱 " + (v.varSoja||"—") + " | Vagens: "+v.vagens+" | Grãos: "+v.graos+" | Prod: "+v.prod+" sc/ha");
+    if (v.cultura !== "Soja")  info.push("🌽 " + (v.hibrido||"—") + " | Espiga: "+v.espiga+" | Prod: "+v.prodMilho+" sc/ha");
+    return '<div style="border:1px solid #dee2e6;border-radius:8px;padding:12px;margin-bottom:8px;background:#fff;">' +
+      '<div class="d-flex justify-content-between align-items-center flex-wrap gap-1">' +
+      '<strong>'+fmt+'</strong>' +
+      '<span style="font-size:.82rem;background:#e9ecef;border-radius:4px;padding:2px 8px;">'+v.cultura+'</span>' +
+      '<button class="btn btn-sm btn-outline-primary" style="cursor:pointer;" onclick="carregarDia(\''+d+'\')">Editar</button>' +
+      '<button class="btn btn-sm btn-outline-danger" style="cursor:pointer;" onclick="apagarDia(\''+d+'\')">Remover</button>' +
+      '</div>' +
+      '<div style="font-size:.83rem;color:#555;margin-top:6px;">'+info.join("<br>")+'</div>' +
+      '</div>';
+  }).join("");
+}
+
+function carregarDia(d) {
+  var v = REAIS[d];
+  el("dData").value    = d;
+  el("dCultura").value = v.cultura || "Ambas";
+  toggleCamposDia();
+  el("dVarSoja").value   = v.varSoja   || "";
+  el("dVagens").value    = v.vagens    || "";
+  el("dGraos").value     = v.graos     || "";
+  el("dProd").value      = v.prod      || "";
+  el("dHibrido").value   = v.hibrido   || "";
+  el("dEspiga").value    = v.espiga    || "";
+  el("dProdMilho").value = v.prodMilho || "";
+  abrirTab("Dias");
+}
+
+async function apagarDia(d) {
+  if (!confirm("Remover configuração do dia "+d.split("-").reverse().join("/")+"?")) return;
+  try {
+    await sbDelete("stine_valores_reais", "local_evento=eq."+LOCAL_EVENTO+"&data=eq."+d);
+    await sincronizar();
+  } catch(e) { alert("Erro ao remover: "+e.message); }
+}
+
+// ===============================
+// UTILS
+// ===============================
+function dataDeISO(iso) {
+  if (!iso) return "";
+  try {
+    var d = new Date(iso);
+    var brt = new Date(d.getTime() - 3*60*60*1000);
+    return brt.toISOString().slice(0, 10);
+  } catch(e) { return iso.slice(0, 10)||""; }
+}
+function formatarData(iso) {
+  var d = dataDeISO(iso); if (!d) return "—";
+  return d.split("-").reverse().join("/");
+}
+
+// ===============================
+// CÁLCULO — fórmulas idênticas ao Excel
+// ===============================
+function calcular(reg, reaisObj) {
+  if (!reaisObj) return null;
+  var cultura = reaisObj.cultura || "Ambas";
+  var n = function(x) { return isNaN(x)||!isFinite(x) ? 0 : x; };
+
+  var vp = parseFloat(reg.vagens_planta)            || 0;
+  var gp = parseFloat(reg.graos_vagem)               || 0;
+  var pp = parseFloat(reg.produtividade_sc_ha)       || 0;
+  var ep = parseFloat(reg.graos_espiga_milho)        || 0;
+  var mp = parseFloat(reg.produtividade_milho_sc_ha) || 0;
+
+  var vr = reaisObj.vagens    || 1;
+  var gr = reaisObj.graos     || 1;
+  var pr = reaisObj.prod      || 1;
+  var er = reaisObj.espiga    || 1;
+  var mr = reaisObj.prodMilho || 1;
+
+  var eV=(vp-vr)/vr, eG=(gp-gr)/gr, eP=(pp-pr)/pr, eE=(ep-er)/er, eM=(mp-mr)/mr;
+
+  var desc = false;
+  if (cultura==="Soja"||cultura==="Ambas") { if(eV>0.2||eG>0.2||eP>0.2) desc=true; }
+  if (cultura==="Milho")                   { if(eE>0.2||eM>0.2) desc=true; }
+  var status = desc ? "DESCLASSIFICADO" : "CLASSIFICADO";
+
+  var pV=(desc||cultura==="Milho")?0:n((1-eV)*10);
+  var pG=(cultura==="Milho")?0:n((1-eG)*10);
+  var pP=(desc||cultura==="Milho")?0:n((1-eP)*40);
+  var pE=(desc||cultura==="Soja")?0:n((1-eE)*10);
+  var pM=(desc||cultura==="Soja")?0:n((1-eM)*30);
+  var total=pV+pG+pP+pE+pM;
+  return { status, eV, eG, eP, eE, eM, pV, pG, pP, pE, pM, total, classificada: desc?0:total };
+}
+
+function getReaisParaReg(reg) {
+  var d = dataDeISO(reg.data_hora);
+  return REAIS[d] || null;
+}
+
+// ===============================
+// STATS
+// ===============================
+function atualizarStats() {
+  var totalHa=0, classified=0, desclass=0;
+  REGS.forEach(function(reg) {
+    totalHa += parseFloat(reg.area_soja_ha)||0;
+    var ro = getReaisParaReg(reg);
+    if (ro) { var c=calcular(reg,ro); if(c){ if(c.status==="CLASSIFICADO") classified++; else desclass++; } }
+  });
+  el("sTotal").textContent    = REGS.length;
+  el("sClass").textContent    = classified;
+  el("sDesclass").textContent = desclass;
+  el("sHa").textContent       = totalHa.toLocaleString("pt-BR");
+}
+
+// ===============================
+// POPULAR FILTROS
+// ===============================
+function popularFiltrosDias() {
+  var diasComRegs = {};
+  REGS.forEach(function(r) { var d=dataDeISO(r.data_hora); if(d) diasComRegs[d]=true; });
+  Object.keys(REAIS).forEach(function(d) { diasComRegs[d]=true; });
+  var todosDias = Object.keys(diasComRegs).sort();
+
+  ["fDia","eDia"].forEach(function(id) {
+    var sel=el(id); if(!sel) return;
+    var cur=sel.value;
+    sel.innerHTML = todosDias.map(function(d){
+      return '<option value="'+d+'">'+d.split("-").reverse().join("/")+'</option>';
+    }).join("") || '<option value="">— nenhum —</option>';
+    if(cur && todosDias.includes(cur)) sel.value=cur;
+  });
+}
+
+function filtrarRegs(periodo, diaVal, iniVal, fimVal) {
+  if (periodo==="dia")   return REGS.filter(function(r){ return dataDeISO(r.data_hora)===diaVal; });
+  if (periodo==="range") return REGS.filter(function(r){ var d=dataDeISO(r.data_hora); return d>=iniVal&&d<=fimVal; });
+  return REGS;
+}
+
+// ===============================
+// FILTRO RANKING
+// ===============================
+function onFiltroPeriodo() {
+  var p=el("fPeriodo").value;
+  el("fDiaCol").style.display=(p==="dia")?"block":"none";
+  el("fIniCol").style.display=(p==="range")?"block":"none";
+  el("fFimCol").style.display=(p==="range")?"block":"none";
+  popularFiltrosDias(); renderRanking();
+}
+
+// ===============================
+// RENDERIZAR RANKING
+// ===============================
+function renderRanking() {
+  var periodo=el("fPeriodo").value, diaVal=el("fDia").value;
+  var iniVal=el("fIni").value, fimVal=el("fFim").value;
+  var n=parseInt(el("fN").value)||5;
+  var tbody=el("tbRanking");
+  var regs=filtrarRegs(periodo,diaVal,iniVal,fimVal);
+  var temReais=Object.keys(REAIS).length>0;
+
+  el("avSemReais").style.display=(!temReais)?"block":"none";
+  el("avSemDados").style.display=(regs.length===0)?"block":"none";
+  if(!temReais||regs.length===0){ tbody.innerHTML=""; return; }
+
+  var comScore=regs.map(function(reg){
+    var ro=getReaisParaReg(reg);
+    return { reg:reg, c: ro?calcular(reg,ro):null };
+  }).filter(function(x){ return x.c!==null; });
+
+  comScore.sort(function(a,b){
+    if(!a.c||!b.c) return 0;
+    if(a.c.status==="CLASSIFICADO"&&b.c.status!=="CLASSIFICADO") return -1;
+    if(b.c.status==="CLASSIFICADO"&&a.c.status!=="CLASSIFICADO") return  1;
+    return b.c.classificada-a.c.classificada;
+  });
+
+  var topN=comScore.filter(function(x){ return x.c&&x.c.status==="CLASSIFICADO"; }).slice(0,n);
+  tbody.innerHTML="";
+  if(!topN.length){
+    tbody.innerHTML="<tr><td colspan='7' class='text-center text-muted py-3'>Nenhum classificado no período.</td></tr>";
+    return;
+  }
+  topN.forEach(function(item,idx){
+    var pos=idx+1, reg=item.reg, c=item.c;
+    var medal=pos===1?"🥇":pos===2?"🥈":pos===3?"🥉":pos+"º";
+    var cls=pos===1?"rank-1":pos===2?"rank-2":pos===3?"rank-3":"";
+    var tr=document.createElement("tr"); tr.className=cls;
+    tr.innerHTML=
+      "<td class='text-center fw-bold'>"+medal+"</td>"+
+      "<td><strong>"+(reg.nome||"—")+"</strong><br><small class='text-muted'>"+(reg.empresa_fazenda||"")+"</small></td>"+
+      "<td>"+(reg.cidade||"—")+" / "+(reg.uf||"—")+"</td>"+
+      "<td class='text-center'>"+((parseFloat(reg.area_soja_ha)||0).toLocaleString("pt-BR"))+"</td>"+
+      "<td class='text-center'>"+formatarData(reg.data_hora)+"</td>"+
+      "<td class='text-center fw-bold text-success'>"+c.classificada.toFixed(2)+"</td>"+
+      "<td class='text-center'><span class='badge-c'>CLASSIFICADO</span></td>";
+    tbody.appendChild(tr);
+  });
+}
+
+// ===============================
+// FILTRO EXPORTAR
+// ===============================
+function onExpPeriodo() {
+  var p=el("ePeriodo").value;
+  el("eDiaCol").style.display=(p==="dia")?"block":"none";
+  el("eIniCol").style.display=(p==="range")?"block":"none";
+  el("eFimCol").style.display=(p==="range")?"block":"none";
+  popularFiltrosDias();
+}
+
+// ===============================
+// EXPORTAR XLSX
+// ===============================
+function buildExportRows(apenasClass) {
+  var periodo=el("ePeriodo").value;
+  var regs=filtrarRegs(periodo,el("eDia").value,el("eIni").value,el("eFim").value);
+  var evt=localStorage.getItem("stine_nome_evento")||LOCAL_EVENTO;
+  var comScore=regs.map(function(reg){
+    var ro=getReaisParaReg(reg);
+    return { reg:reg, c:ro?calcular(reg,ro):null, ro:ro };
+  }).sort(function(a,b){ if(!a.c||!b.c) return 0; return b.c.classificada-a.c.classificada; });
+  if(apenasClass) comScore=comScore.filter(function(x){ return x.c&&x.c.status==="CLASSIFICADO"; });
+
+  var h=["DataHora","Evento","Local","Nome","Cargo","Empresa","Telefone","Email","Cidade","UF","Area_ha",
+         "Planta_Stine","Qual_Stine","Fornecedor","Segue_Redes","LGPD",
+         "Variedade_Soja","Pop_Soja","Hibrido_Milho","PMG_Milho","Pop_Milho",
+         "Vagens","Graos","Prod_sc_ha","Graos_Espiga","ProdMilho_sc_ha",
+         "Vagens_Reais","Graos_Reais","Prod_Real","Espiga_Real","ProdMilho_Real",
+         "Erro_Vagens","Erro_Graos","Erro_Prod","Erro_Espiga","Erro_ProdMilho",
+         "Status","Pont_Vagens","Pont_Graos","Pont_Prod","Pont_Espiga","Pont_ProdMilho",
+         "Pontuacao_Total","Pontuacao_Classificada"];
+  var rows=[h];
+  var f=function(x){ return (x!==undefined&&x!==null&&!isNaN(x))?parseFloat(x).toFixed(4):""; };
+  comScore.forEach(function(item){
+    var r=item.reg, c=item.c||{}, ro=item.ro||{};
+    rows.push([r.data_hora||"",evt,LOCAL_EVENTO,r.nome||"",r.cargo||"",r.empresa_fazenda||"",
+               r.telefone||"",r.email||"",r.cidade||"",r.uf||"",r.area_soja_ha||"",
+               r.planta_stine||"",r.qual_stine||"",r.fornecedor_semente||"",
+               r.segue_redes||"",r.aceite_lgpd||"",
+               r.variedade_soja||"",r.populacao_final_soja||"",r.hibrido_milho||"",
+               r.pmg_milho||"",r.populacao_final_milho||"",
+               r.vagens_planta||"",r.graos_vagem||"",r.produtividade_sc_ha||"",
+               r.graos_espiga_milho||"",r.produtividade_milho_sc_ha||"",
+               ro.vagens||"",ro.graos||"",ro.prod||"",ro.espiga||"",ro.prodMilho||"",
+               f(c.eV),f(c.eG),f(c.eP),f(c.eE),f(c.eM),
+               c.status||"N/A",
+               f(c.pV),f(c.pG),f(c.pP),f(c.pE),f(c.pM),f(c.total),f(c.classificada)]);
+  });
+  return rows;
+}
+
+el("btnExpCompleto").onclick=function(){
+  var ws=XLSX.utils.aoa_to_sheet(buildExportRows(false));
+  var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,"Base_Stine");
+  XLSX.writeFile(wb,"Stine_"+LOCAL_EVENTO+"_Completo.xlsx");
+};
+el("btnExpRanking").onclick=function(){
+  var ws=XLSX.utils.aoa_to_sheet(buildExportRows(true));
+  var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,"Ranking");
+  XLSX.writeFile(wb,"Stine_"+LOCAL_EVENTO+"_Ranking.xlsx");
+};
+
+// ===============================
+// APAGAR (com senha)
+// ===============================
+el("btnApagarRegs").onclick=async function(){
+  if(el("senhaApagarRegs").value!==SENHA){ alert("Senha incorreta."); el("senhaApagarRegs").value=""; return; }
+  if(!confirm("Apagar TODOS os registros de participantes do evento "+LOCAL_EVENTO+" no Supabase?\n(O Excel de backup não é afetado.)")) return;
+  try {
+    await sbDelete("stine_coletas","local_evento=eq."+LOCAL_EVENTO);
+    el("senhaApagarRegs").value="";
+    await sincronizar();
+    alert("Registros apagados.");
+  } catch(e){ alert("Erro: "+e.message); }
+};
+
+el("btnApagarReais").onclick=async function(){
+  if(el("senhaApagarReais").value!==SENHA){ alert("Senha incorreta."); el("senhaApagarReais").value=""; return; }
+  if(!confirm("Apagar todos os valores reais configurados por dia para "+LOCAL_EVENTO+"?")) return;
+  try {
+    await sbDelete("stine_valores_reais","local_evento=eq."+LOCAL_EVENTO);
+    el("senhaApagarReais").value="";
+    await sincronizar();
+    alert("Valores reais apagados.");
+  } catch(e){ alert("Erro: "+e.message); }
+};
+</script>
+</body>
+</html>
