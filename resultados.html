@@ -242,6 +242,89 @@
     <div class="card-body">
       <h6 class="fw-bold mb-3">⚙️ Gerenciamento de Dados</h6>
       <div class="alert alert-info" style="font-size:.9rem;">Os dados são armazenados no Supabase e <strong>nunca apagados automaticamente</strong>. O backup no Excel não é afetado por nenhuma ação aqui.</div>
+
+      <hr class="my-4">
+      <h6 class="fw-bold mb-1">⚖️ Pesos de Pontuação</h6>
+      <p class="text-muted mb-3" style="font-size:.88rem;">Ajuste os pesos por cultura. Cada grupo deve somar exatamente 100 pontos.</p>
+
+      <!-- SOJA -->
+      <div class="card border-success mb-3">
+        <div class="card-header text-success fw-bold py-2">🌱 Apenas Soja</div>
+        <div class="card-body">
+          <div class="row g-2 align-items-center">
+            <div class="col-md-4">
+              <label class="form-label" style="font-size:.88rem;">Vagens/planta (%)</label>
+              <input type="number" id="pw_soja_v" class="form-control" min="0" max="100" value="20" onchange="atualizarSomaPesos('soja')">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" style="font-size:.88rem;">Grãos/planta (%)</label>
+              <input type="number" id="pw_soja_g" class="form-control" min="0" max="100" value="20" onchange="atualizarSomaPesos('soja')">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" style="font-size:.88rem;">Produtividade sc/ha (%)</label>
+              <input type="number" id="pw_soja_p" class="form-control" min="0" max="100" value="60" onchange="atualizarSomaPesos('soja')">
+            </div>
+          </div>
+          <div class="mt-2" id="soma_soja" style="font-size:.88rem;"></div>
+        </div>
+      </div>
+
+      <!-- MILHO -->
+      <div class="card border-warning mb-3">
+        <div class="card-header text-warning fw-bold py-2">🌽 Apenas Milho</div>
+        <div class="card-body">
+          <div class="row g-2 align-items-center">
+            <div class="col-md-6">
+              <label class="form-label" style="font-size:.88rem;">Grãos/espiga (%)</label>
+              <input type="number" id="pw_milho_e" class="form-control" min="0" max="100" value="30" onchange="atualizarSomaPesos('milho')">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" style="font-size:.88rem;">Produtividade sc/ha (%)</label>
+              <input type="number" id="pw_milho_m" class="form-control" min="0" max="100" value="70" onchange="atualizarSomaPesos('milho')">
+            </div>
+          </div>
+          <div class="mt-2" id="soma_milho" style="font-size:.88rem;"></div>
+        </div>
+      </div>
+
+      <!-- AMBAS -->
+      <div class="card border-primary mb-3">
+        <div class="card-header text-primary fw-bold py-2">🌱🌽 Soja + Milho</div>
+        <div class="card-body">
+          <div class="row g-2 align-items-center">
+            <div class="col-md-4">
+              <label class="form-label" style="font-size:.88rem;">Vagens/planta (%)</label>
+              <input type="number" id="pw_ambas_v" class="form-control" min="0" max="100" value="10" onchange="atualizarSomaPesos('ambas')">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" style="font-size:.88rem;">Grãos/planta (%)</label>
+              <input type="number" id="pw_ambas_g" class="form-control" min="0" max="100" value="10" onchange="atualizarSomaPesos('ambas')">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" style="font-size:.88rem;">Prod. Soja sc/ha (%)</label>
+              <input type="number" id="pw_ambas_p" class="form-control" min="0" max="100" value="40" onchange="atualizarSomaPesos('ambas')">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" style="font-size:.88rem;">Grãos/espiga (%)</label>
+              <input type="number" id="pw_ambas_e" class="form-control" min="0" max="100" value="10" onchange="atualizarSomaPesos('ambas')">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" style="font-size:.88rem;">Prod. Milho sc/ha (%)</label>
+              <input type="number" id="pw_ambas_m" class="form-control" min="0" max="100" value="30" onchange="atualizarSomaPesos('ambas')">
+            </div>
+          </div>
+          <div class="mt-2" id="soma_ambas" style="font-size:.88rem;"></div>
+        </div>
+      </div>
+
+      <div id="msgPesoSalvo"  style="display:none;color:#198754;font-weight:bold;margin-bottom:8px;">✅ Pesos salvos! Ranking recalculado.</div>
+      <div id="msgPesoErro"   style="display:none;color:#dc3545;font-weight:bold;margin-bottom:8px;">❌ Um ou mais grupos não somam 100. Corrija antes de salvar.</div>
+      <div class="d-flex gap-2">
+        <button id="btnSalvarPesos" class="btn btn-success" style="cursor:pointer;">💾 Salvar pesos</button>
+        <button id="btnResetPesos"  class="btn btn-outline-secondary" style="cursor:pointer;">↩️ Restaurar padrão</button>
+      </div>
+
+      <hr class="my-4">
       <div class="row g-3">
         <div class="col-md-6">
           <div class="card border-danger">
@@ -390,6 +473,7 @@ function init() {
   el("lblEvento").textContent = nome || LOCAL_EVENTO;
   el("dData").value = new Date().toISOString().slice(0, 10);
   toggleCamposDia();
+  carregarPesosNaTela();
   sincronizar();
 }
 
@@ -525,18 +609,18 @@ function formatarData(iso) {
 }
 
 // ===============================
-// CÁLCULO — fórmulas idênticas ao Excel
+// CÁLCULO — pesos dinâmicos por cultura (sempre somam 100 pontos)
 // ===============================
 function calcular(reg, reaisObj) {
   if (!reaisObj) return null;
   var cultura = reaisObj.cultura || "Ambas";
   var n = function(x) { return isNaN(x)||!isFinite(x) ? 0 : x; };
 
-  var vp = parseFloat(reg.vagens_planta)            || 0;
-  var gp = parseFloat(reg.graos_vagem)               || 0;
-  var pp = parseFloat(reg.produtividade_sc_ha)       || 0;
-  var ep = parseFloat(reg.graos_espiga_milho)        || 0;
-  var mp = parseFloat(reg.produtividade_milho_sc_ha) || 0;
+  var vp = parseFloat(reg.vagens_planta)             || 0;
+  var gp = parseFloat(reg.graos_vagem)                || 0;
+  var pp = parseFloat(reg.produtividade_sc_ha)        || 0;
+  var ep = parseFloat(reg.graos_espiga_milho)         || 0;
+  var mp = parseFloat(reg.produtividade_milho_sc_ha)  || 0;
 
   var vr = reaisObj.vagens    || 1;
   var gr = reaisObj.graos     || 1;
@@ -546,18 +630,27 @@ function calcular(reg, reaisObj) {
 
   var eV=(vp-vr)/vr, eG=(gp-gr)/gr, eP=(pp-pr)/pr, eE=(ep-er)/er, eM=(mp-mr)/mr;
 
+  // Pesos dinâmicos conforme cultura — lidos da configuração (padrão se não alterado)
+  var pesos = getPesos();
+  var wObj  = cultura==="Soja" ? pesos.soja : cultura==="Milho" ? pesos.milho : pesos.ambas;
+  var wV=wObj.wV, wG=wObj.wG, wP=wObj.wP, wE=wObj.wE, wM=wObj.wM;
+
+  // Desclassificação: qualquer erro POSITIVO > 20% nas culturas ativas
   var desc = false;
-  if (cultura==="Soja"||cultura==="Ambas") { if(eV>0.2||eG>0.2||eP>0.2) desc=true; }
-  if (cultura==="Milho")                   { if(eE>0.2||eM>0.2) desc=true; }
+  if (cultura === "Soja"  || cultura === "Ambas") { if (eV>0.2||eG>0.2||eP>0.2) desc=true; }
+  if (cultura === "Milho" || cultura === "Ambas") { if (eE>0.2||eM>0.2)         desc=true; }
   var status = desc ? "DESCLASSIFICADO" : "CLASSIFICADO";
 
-  var pV=(desc||cultura==="Milho")?0:n((1-eV)*10);
-  var pG=(cultura==="Milho")?0:n((1-eG)*10);
-  var pP=(desc||cultura==="Milho")?0:n((1-eP)*40);
-  var pE=(desc||cultura==="Soja")?0:n((1-eE)*10);
-  var pM=(desc||cultura==="Soja")?0:n((1-eM)*30);
-  var total=pV+pG+pP+pE+pM;
-  return { status, eV, eG, eP, eE, eM, pV, pG, pP, pE, pM, total, classificada: desc?0:total };
+  // Pontuação por componente com peso dinâmico
+  var pV = wV > 0 ? n((1-eV)*wV) : 0;
+  var pG = wG > 0 ? n((1-eG)*wG) : 0;
+  var pP = wP > 0 ? n((1-eP)*wP) : 0;
+  var pE = wE > 0 ? n((1-eE)*wE) : 0;
+  var pM = wM > 0 ? n((1-eM)*wM) : 0;
+
+  var total = pV+pG+pP+pE+pM;
+  return { status, eV, eG, eP, eE, eM, pV, pG, pP, pE, pM, total,
+           classificada: desc ? 0 : total };
 }
 
 function getReaisParaReg(reg) {
@@ -753,6 +846,95 @@ el("btnApagarReais").onclick=async function(){
     await sincronizar();
     alert("Valores reais apagados.");
   } catch(e){ alert("Erro: "+e.message); }
+};
+
+// ===============================
+// PESOS CONFIGURÁVEIS
+// ===============================
+const KEY_PESOS = "stine_pesos";
+const PESOS_DEFAULT = {
+  soja:  { wV:20, wG:20, wP:60, wE:0,  wM:0  },
+  milho: { wV:0,  wG:0,  wP:0,  wE:30, wM:70 },
+  ambas: { wV:10, wG:10, wP:40, wE:10, wM:30 }
+};
+
+function getPesos() {
+  var saved = JSON.parse(localStorage.getItem(KEY_PESOS) || "null");
+  return saved || PESOS_DEFAULT;
+}
+
+function carregarPesosNaTela() {
+  var p = getPesos();
+  el("pw_soja_v").value  = p.soja.wV;
+  el("pw_soja_g").value  = p.soja.wG;
+  el("pw_soja_p").value  = p.soja.wP;
+  el("pw_milho_e").value = p.milho.wE;
+  el("pw_milho_m").value = p.milho.wM;
+  el("pw_ambas_v").value = p.ambas.wV;
+  el("pw_ambas_g").value = p.ambas.wG;
+  el("pw_ambas_p").value = p.ambas.wP;
+  el("pw_ambas_e").value = p.ambas.wE;
+  el("pw_ambas_m").value = p.ambas.wM;
+  ["soja","milho","ambas"].forEach(atualizarSomaPesos);
+}
+
+function atualizarSomaPesos(grupo) {
+  var soma, cor, msg;
+  if (grupo === "soja") {
+    soma = (+el("pw_soja_v").value||0) + (+el("pw_soja_g").value||0) + (+el("pw_soja_p").value||0);
+  } else if (grupo === "milho") {
+    soma = (+el("pw_milho_e").value||0) + (+el("pw_milho_m").value||0);
+  } else {
+    soma = (+el("pw_ambas_v").value||0) + (+el("pw_ambas_g").value||0) +
+           (+el("pw_ambas_p").value||0) + (+el("pw_ambas_e").value||0) +
+           (+el("pw_ambas_m").value||0);
+  }
+  cor  = soma === 100 ? "#198754" : "#dc3545";
+  msg  = soma === 100 ? "✅ Soma: 100" : "⚠️ Soma: " + soma + " (deve ser 100)";
+  var div = el("soma_" + grupo);
+  if (div) { div.style.color = cor; div.textContent = msg; }
+}
+
+function validarPesos() {
+  var p = lerPesosDaTela();
+  var sSoja  = p.soja.wV  + p.soja.wG  + p.soja.wP;
+  var sMilho = p.milho.wE + p.milho.wM;
+  var sAmbas = p.ambas.wV + p.ambas.wG + p.ambas.wP + p.ambas.wE + p.ambas.wM;
+  return sSoja === 100 && sMilho === 100 && sAmbas === 100;
+}
+
+function lerPesosDaTela() {
+  return {
+    soja:  { wV:+el("pw_soja_v").value||0,  wG:+el("pw_soja_g").value||0,
+             wP:+el("pw_soja_p").value||0,  wE:0, wM:0 },
+    milho: { wV:0, wG:0, wP:0,
+             wE:+el("pw_milho_e").value||0, wM:+el("pw_milho_m").value||0 },
+    ambas: { wV:+el("pw_ambas_v").value||0, wG:+el("pw_ambas_g").value||0,
+             wP:+el("pw_ambas_p").value||0, wE:+el("pw_ambas_e").value||0,
+             wM:+el("pw_ambas_m").value||0 }
+  };
+}
+
+el("btnSalvarPesos").onclick = function() {
+  el("msgPesoSalvo").style.display = "none";
+  el("msgPesoErro").style.display  = "none";
+  if (!validarPesos()) {
+    el("msgPesoErro").style.display = "block";
+    return;
+  }
+  localStorage.setItem(KEY_PESOS, JSON.stringify(lerPesosDaTela()));
+  el("msgPesoSalvo").style.display = "block";
+  setTimeout(function() { el("msgPesoSalvo").style.display = "none"; }, 2500);
+  renderRanking();
+  atualizarStats();
+};
+
+el("btnResetPesos").onclick = function() {
+  if (!confirm("Restaurar pesos para os valores padrão?")) return;
+  localStorage.removeItem(KEY_PESOS);
+  carregarPesosNaTela();
+  renderRanking();
+  atualizarStats();
 };
 </script>
 </body>
